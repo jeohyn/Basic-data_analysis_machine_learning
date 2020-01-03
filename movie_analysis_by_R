@@ -1,0 +1,46 @@
+library(rvest)
+library(rJava)
+library(KoNLP)
+library(wordcloud)
+library(RColorBrewer)
+useSejongDic()
+pal<-brewer.pal(10, "Spectral")
+url_base<-"https://movie.daum.net/moviedb/grade?movieId=93004&type=netizen&page="
+all.stars<-NULL
+all.reviews<-NULL
+##download the stars and reviews of this movie
+for (page in 1:5) {    
+  url<-paste(url_base, page, sep="")    
+  print(url)
+  htxt<-read_html(url)
+##download reviews
+  tabled<-html_nodes(htxt,'.review_info')
+  content<-html_nodes(tabled, '.desc_review')
+  reviews<-html_text(content)
+  if(length(reviews)==0) {break}
+##download stars
+  all.reviews<-c(all.reviews,reviews)
+  table<-html_nodes(htxt, '.review_info')
+ tabless<-html_nodes(table, '.emph_grade')
+  stars<-html_text(tabless)
+  all.stars<-c(all.stars,stars)
+}
+
+##draw a graph of star
+all.stars<- as.integer(all.stars)
+hist(all.stars,xlim=c(0,10),main="영화 겨울왕국2의 별점 분포", xlab="별점", ylab="사람(명)")
+
+##Review the normality of star distribution
+shapiro.test(all.stars)
+##p-value= 1.288e-12<0.05 따라서 정규성을 따른다는 귀무가설 기각. 별점의 분포는 정규분포를 따르지 않음
+
+##wordcloud of reviews
+all.reviews<-gsub("\t"," ",all.reviews)
+all.reviews<-gsub("\n"," ",all.reviews)
+all.reviews<-gsub("\r"," ",all.reviews)
+noun<-sapply(all.reviews, extractNoun, USE.NAMES=F)
+noun2<-unlist(noun)
+noun2<-Filter(function(x){nchar(x)>=2},noun2)
+word<-table(noun2)
+head(sort(word,decreasing=TRUE),20)
+wordcloud(names(word),freq=word, scale=c(6,0.3), min.freq=2, random.order=F, colors=pal)
