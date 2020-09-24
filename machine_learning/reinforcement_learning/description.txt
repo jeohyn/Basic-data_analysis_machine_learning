@@ -104,3 +104,38 @@ dis=.99
 
 #update Q-Table w/ArithmeticError new knowledge using decay rate
 Q[state, action]=reward+dis*np.max(Q[new_state, :])
+
+
+
+#Deterministic vs Stochastic(nondeterministic)
+
+●Deterministic models
+the output of the model is fully determined by the parameter values and the initial conditions initial conditions
+-->in code, 'is_slippery : False' option
+
+●Stochastic models 
+It possess some inherent randomness.
+The same set of parameter values and initial conditions will lead to and ensemble of different output.
+-->in code, 'is_slippery : True' option=>env=gym.make('FrozenLake-v0')
+
+●In stochastic worlds, unfortunately, Q-learning(for deterministic worlds) does not work anymore.
+->WHY?
+*Return value from Q-learning is limited.
+ex)computer try to moves to right, but actually moves to up(because it's slippery). BUT computer understnds that it moves to right, so the return value of right from Q-learning this time is larger than down.
+
+-->SOLUTION
+*listen to Q(s') just a little bit and update Q(s) little bit(learning rate)
+LIKE OUR LIFE MENTORS_don't just listen and follow one mentor. need to listen from many mentors.
+
+--->learning incrementally
+learning rate α. 
+Let α=0.1<=>computer will accept the result of Q-learning 10%, probability of move randomly is (1-α).
+Q(s,a)<-(1-α)*Q(s,a)+α*{r+Γ*max Q(s',a')}
+<=>Q(s,a)<-Q(s,a)+α*{r+Γ*(max Q(s',a'))-Q(s,a)}
+
+●Convergence
+Q̂(s,a)<-(1-α)Q̂(s,a)+α{r+Γ*max Q̂(s',a')}
+can still prove convergence of Q̂ to Q [Watkins and Dayan, 1992]
+
+
+
