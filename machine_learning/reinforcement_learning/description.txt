@@ -30,6 +30,7 @@ Do forever :
 -update the table entry for Q(s,a) as follows:
    Q(s,a)<-r+max Q(s',a')
 -s<-s'
+----------------------------------------------------------------------------------------
 
 #Exploit vs Exploration
 
@@ -104,8 +105,7 @@ dis=.99
 
 #update Q-Table w/ArithmeticError new knowledge using decay rate
 Q[state, action]=reward+dis*np.max(Q[new_state, :])
-
-
+-----------------------------------------------------------------------------------------------
 
 #Deterministic vs Stochastic(nondeterministic)
 
@@ -136,7 +136,7 @@ Q(s,a)<-(1-α)*Q(s,a)+α*{r+Γ*max Q(s',a')}
 ●Convergence
 Q̂(s,a)<-(1-α)Q̂(s,a)+α{r+Γ*max Q̂(s',a')}
 can still prove convergence of Q̂ to Q [Watkins and Dayan, 1992]
-
+--------------------------------------------------------------------------------------------------
 
 #Q-Network
 ->we can control the output(reward for all actions, best reward action, ...)
