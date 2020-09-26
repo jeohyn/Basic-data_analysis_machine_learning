@@ -138,4 +138,50 @@ Q̂(s,a)<-(1-α)Q̂(s,a)+α{r+Γ*max Q̂(s',a')}
 can still prove convergence of Q̂ to Q [Watkins and Dayan, 1992]
 
 
+#Q-Network
+->we can control the output(reward for all actions, best reward action, ...)
+
+●Q-Network training(linear regression)
+H(x)=W*x
+cost(W)=1/m*sum(W*x(i)-y(i))^2  (y(i) is the real value, W*x(i) is Q-prediction value)
+(The range of values i is 1 to m.)
+
+->cost(W)=(W*s-y)^2
+(y=r+Γ*max Q(s'), W*s=Q-prediction)
+
+●Q-Network training(math notations)
+W*s=Q̂(s, a|θ)=Q*(s,a)
+(θ=weight, network)
+(Q̂:predict, Q*:optimal)
+
+->choose θ to minimize
+min(sum[Q̂(s(t), a(t)|θ)-(r(t)+Γ*max Q(s(t+1), a'|θ))]^2
+(The range of values t is 0 to T.)
+(W*s=Q̂(s(t), a(t)|θ), Q*(s,a)=r(t)+Γ*max Q(s(t+1), a'|θ))
+
+●Y lavel and loss function in algorithm(Playing Atari with Deep Reinforcement Learning algorithm)
+
+Set y(j)={r(j) for terminal Φ(j+1)(if next state is goal)
+	      {r(j)+Γ*max Q(Φ(j+1), a'|θ) for non-terminal Φ(j+1) (TARGET)
+Perform a gradient descent step on (y(j)-Q(Φ(j+1), a'|θ))^2 according to equation 3.//get the value that makes (y(j)-Q(Φ(j+1), a'|θ))^2 least.
+
+->(y(j)-Q(Φ(j+1), a'|θ))^2 : target/label
+(Q(Φ(j+1), a'|θ)=W*s)
+
+●Deterministic or Stochastic?
+Stochastic : Q(s,a)<-(1-α)Q(s,a)+α{r+Γ*max Q(s',a')}
+<->r(j)+Γ*max Q(Φ(j+1), a'|θ)
+
+●Convergence
+min(sum[Q̂(s(t), a(t)|θ)-(r(t)+Γ*max Q(s(t+1), a'|θ))]^2
+
+converges to Q* using table lookup representation
+BUT diverges using neural networks due to Correlation b/w samples, Non-stationary targets
+->BUT if you want Reinforcement+Neural Net
+-->USE DQN(Deep, Replay, Separated networks)
+
+
++)
+results of codes that I upload are really poor. WHY?
+->network is small(shallow), and other reasons are written right above
 
