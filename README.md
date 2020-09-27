@@ -2,7 +2,9 @@
 very first of a data analysis
 
 
-# source(I studied from these websites, and codes that I upload are programmed these website operators.
+# source
+●I studied from these websites, and codes that I upload are programmed these website operators.
+
 *reinforcement learning
 The source of codes and explanation is http://hunkim.github.io/ml/
 
