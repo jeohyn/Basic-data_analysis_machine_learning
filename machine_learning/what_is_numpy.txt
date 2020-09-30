@@ -1,0 +1,32 @@
+Numpy?
+->Numerical Python. A library that helps to use large-scale multidimensional array in Python
+
+then what about Python list?
+->numpy is fasater and use memory more efficiently than list
+
+How to make array by numpy?
+->np.array([1,2,3,4,5]) #data type=int
+->np.array([1,2,3,4,5], dtype='float') #data type=float
+UNLIKE python list, array contains ONLY one data type
+->if you want to change float array to int-->arr.astype(int)
+
+dtype_int(i, int_, in32, int64, i8), flaot(f, float_, float32, float64, f8), str(str, U, U32), bool(?, bool_)
+
+EX)
+np.zeors(10, dtype=int)
+->return array([0,0,0,0,0,0,0,0,0,0])
+
+np.ones((3,5), dtype=float) #3X5 array
+->return array([[1., 1., 1., 1., 1.], [1., 1., 1., 1., 1.], [1., 1., 1., 1., 1.]])
+
+np.arange(0,10,2) #start=0, end=20, step=2
+->return array([0,2,4,6,8])
+
+np.linspace(0,1,5) #divide 0 to 1 into 5 numbers
+->return array([0., 0.25, 0.5, 0.75, 1.])
+
+np.random.random((2,2)) #returns 2X2 array. elements are random
+
+np.random.normal(0,1,(2,2)) #returns 2X2 array which avg=0, standard deviation=1 by standard regular distribution
+
+np.random.randint(0,10,(2,2)) #returns 2X2 array which is filled random number in 0 to 10.
