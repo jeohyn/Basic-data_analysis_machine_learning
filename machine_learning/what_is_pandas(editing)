@@ -1,0 +1,90 @@
+Pandas?
+efficiently handle and store structured data. numpy based.
+
+Series
+:has data and index. numpy array reinforced form
+EX)
+data=pd.Series([1, 2, 3, 4])
+#index=0, 1, 2, 3 data=1, 2, 3, 4
++)
+data=pd.Series([1, 2, 3, 4], index=['a', 'b', 'c', 'd'])
+data['b']
+>>2
+
++)can make by dictionary
+EX)
+population_dict={
+	'korea' : 5180, 'china' : 141500, 'usa' : 32676}
+population=pd.Series(population_dict)
+#>>index='china', 'korea', 'usa' data=141500, 5180, 32676
+
+
+DataFrame
+:several series gathered together
+
+EX)
+population_dict={
+	'korea' : 5180, 'china' : 141500, 'usa' : 32676}
+population=pd.Series(population_dict)
+gdp_dict={
+'korea' : 16932000, 'china' : 1409250000, 'usa' : 2041280000}
+gdp=pd.Series(gdp_dict)
+country=pd.DataFrame({'population':population, 'gdp'=gdp})
+
+country.index
+#Index(['china', 'korea', 'usa'])
+country.columns
+#Index(['gdp', 'population'], dtype='object')#object in dataframe=string
+country['gdp']
+#retrun series data(gdp data)
++)dataframe can make dictionary
+
+Series also can use operator like numpy array.
+EX)
+gdp_per_capita=country['gdp']/country['population']
+##if you want to put gdp_per_capita to country dataframe
+country['gdp per capita']=gdp_per_capita
+
+How to save it?
+country.to_csv('./country.csv')
+country.to_excel('./country.xlsx')
+
+How to read it?
+country=pd.read_csv("./country.csv')
+country=pd.read_excel("./country.xlsx')
+
+Indexing & Slicing
+loc : Indexing/sliding referencing explicit indexes
+EX)
+country.loc['china']
+#get data only about china
+country.loc['china':'korea', :'population'] #slicing
+#get data about china to korea, ~to population
+
+iloc:python style integer index indexing/slicing
+WX)
+country.iloc[0]
+#get data of china(index[0])
+country.iloc[1:2, :2]
+#get ~to population data(index[:2]) of korea and usa(index[1:2])
+
+HOW to add new data or edit data in dataframe?
+ADD
+1. add list
+dataframe=pd.DataFrame(columns=['name', 'age', 'address'])
+dataframe.loc[0]=['Jake','26','NY']
+2. add dictionary
+dataframe.loc[1]={'name':'Jane', 'age':'24' ,'address':'PA'}
+EDIT
+dataframe.loc[0,'name']='Lia'
+
+ADD new COLUMN
+#put null. NaN=Not a Number
+dataframe['phone']=np.nan
+dataframe.loc[0, 'phone']='5851234567'
+
+SELECT COLUMN
+dataframe['name']
+#returns series(data only about name)
+dataframe[['name', 'address', 'age']]
+#returns dataframe(data about name, address, and age)
