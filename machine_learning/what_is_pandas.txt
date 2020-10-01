@@ -88,3 +88,48 @@ dataframe['name']
 #returns series(data only about name)
 dataframe[['name', 'address', 'age']]
 #returns dataframe(data about name, address, and age)
+
+CHECK null data(NaN, None)_isnull(), notnull()
+isnull() : check data is null_ if null : return true
+notnull() : check data is not null_if not null : return true
+
+DELETE or FILL null data_dropna(), fillna()
+dropna()_delete null data row
+fillna(a)_fill NaN/None to a
+
+Series operation
+EX)
+A=pd.Series([2, 4, 6], index=[0, 1, 2])
+B=pd.Series([1, 3, 5], index=[1, 2, 3])
+A+B
+#index : 0 data : NaN(=2+NaN), index : 1 data : 5.0, index : 2 data : 9.0, index : 3 data : NaN(=5+NaN)
+A.add(B, fill_value=0)
+#index : 0 data : 2.0(=2+0), index : 1 data : 5.0, index : 2 data : 9.0, index : 3 data : 5.0(=5+0)
+
+DataFrame operation
+sub, mul, div possible
+EX)
+A=pd.DataFrame(np.random.randint(0, 10, (2, 2)), columns=list("AB"))
+B=pd.DataFrame(np.random.randint(0, 10, (3, 3)), columns=list("BAC"))
+A+B 
+#NaN value : C row, column 2(index 2)
+A.add(B, fill_value=0)
+#C row operation : C row+0, column 2 operation : column2+0
+
+min, sum, mean also possible
+EX)
+data={
+	'A':[i+5 for i in range(3)],
+	'B':[i**2 for i in range(3)]
+}
+#B:square value
+df=pd.DataFrame(data)
+#array([[5, 0], [6, 1], [7, 4]]) and column names are A and B in regular order
+df['A'].sum() #18
+df.sum() # A : 18 B : 5
+df.mean() #A : 6.000000 B : 1.666667
+
+Sorting DataFrame
+-sorting by value : df.sort_values(column name) #ascending order
+		df.sort_values(column name, ascending=False) #descending order
+		df.sor_values([column name1, column name2]) #sort by column name1 and if there's same value in column name1, sort that by column name2
