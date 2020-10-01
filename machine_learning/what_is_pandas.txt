@@ -50,8 +50,8 @@ country.to_csv('./country.csv')
 country.to_excel('./country.xlsx')
 
 How to read it?
-country=pd.read_csv("./country.csv')
-country=pd.read_excel("./country.xlsx')
+country=pd.read_csv('./country.csv')
+country=pd.read_excel('./country.xlsx')
 
 Indexing & Slicing
 loc : Indexing/sliding referencing explicit indexes
