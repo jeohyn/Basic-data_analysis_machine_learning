@@ -1,0 +1,114 @@
+Matplotlib
+Library that can visualize data as graphs or charts in python
+-figure : space for graphs
+-axes : graph
+-major tick : a large scale on a graph
+-minor tick : scale in b/w major ticks
+-legend : type of graph
+EX)
+fig, ax=plt.subplots()
+ax.plot(a, b) #draw graph
+ax.set_title(""), ax.set_xlabel(""), ax.set_ylabel("")
+fig.set_dpi(300) #specify resolution when saving
+fig.savefig("") #save graph
+
+IF you want to draw 2 graph in one figure,
+x=np.linspace(0, np.pi*4, 100) #divide 0 to np.pi*4 in 100 sections
+fig, axes=plt.subplot(2, 1) #we can draw graph in 2 rows, 1 column fig.
+axes[0].plot(x, np.sin(x))
+axes[1].plot(x, np.cos(x))
+
+GRAPHS of matplotlib
+-line plot
+ax.plot(
+	x, y,
+	linestyle=":",
+	marker="*",
+	color="#524FA1"
+)
+
+*linestyle
+"-" or "solid" : solid style
+"--" or "dashed": dashed
+"-." or "dashdot": dashdot
+":" or "dotted": dotted
+
+*type of color
+color="r" #red. rgbcmyk
+color="green"
+color='0.8' #grey scale. 0:black, 1:transparent color
+color="#524FA1" #rgb code
+
+*marker
+there are so many types of marker. These are examples
+"." #dot point
+"o" #circle point
+"v" #downward triangle point
+"s" #square point
+"*" #star point
+
+ADJUST graph axis boundary
+ax.set_xlim( , ), ax.set_ylim( , )
+
+LEGEND
+EX) two lines in one graph
+fig, ax=plt.subplots()
+ax.plot(x, x, label='y=x')
+ax.plot(x, x**2, label='y=x**2')
+ax.set_xlabel("x")
+ax.set_yabel("y")
+ax.legend( #box of lines and labels
+	loc='upper right', #location of legend box. lower center, lower left, ...
+	shadow=True,
+	fancybox=True, #edge corners
+	borderpad=2 #margin inside a box
+)
+
+-scatter
+ax.plot(
+	x, x**2, "o",
+	markersize=15, #size of marker
+	markerfacecolor='white', #color of marker inside
+	markeredgecolor='blue'
+)
+
+EX2)
+fig, ax=plt.subplots()
+x=np.random.randn(50)
+y=np.random.randn(50)
+colors=np.random.randint(0, 100, 50)
+sizes=500*np.pi*np.random.rand(50)**2
+ax.scatter(
+	x, y, c=colors, s=sizes, alpha=0.3)
+#alpha : transparency
+
+-barplot
+fig, ax=plt.subplots(figsize=(12, 4)) #each graph size is 4*12
+ax.bar(x, x*2)
+
+--cumulative bar plot
+x=np.random.rand(3)
+y=np.random.rand(3)
+z=np.random.rand(3)
+data=[x, y, z]
+
+fig, ax=plt.subplots()
+x_ax=np.arange(3) #x_ax=[0, 1, 2]
+for i in x_ax:
+	ax.bar(x_ax, data[i]. bottom=np.sum(data[:i], axis=0))
+	#x data=x_ax, y data=data[i], axis=0 : build vertical
+ax.set_xticks(x_ax)
+ax.set_xticklabels(["A", "B", "C"])
+
+-histogram
+data=np.random.randn(1000)
+ax.hist(data, bins=50) #bins : number of bars(number of range)
+
+Matplotlib with pandas
+EX)lineplot
+df=pd.read_csv('./president_heights.csv')
+fig, ax=plt, subplots()
+ax.plot(df['order'], df['height(cm)'], label='height')
+ax.set_xlabel('order')
+ax.set_ylabel('height(cm)')
+

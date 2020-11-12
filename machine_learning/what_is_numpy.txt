@@ -1,0 +1,160 @@
+Numpy?
+->Numerical Python. A library that helps to use large-scale multidimensional array in Python
+
+then what about Python list?
+->numpy is fasater and use memory more efficiently than list
+
+How to make array by numpy?
+->np.array([1,2,3,4,5]) #data type=int
+->np.array([1,2,3,4,5], dtype='float') #data type=float
+UNLIKE python list, array contains ONLY one data type
+->if you want to change float array to int-->arr.astype(int)
+
+dtype_int(i, int_, in32, int64, i8), flaot(f, float_, float32, float64, f8), str(str, U, U32), bool(?, bool_)
+
+EX)
+np.empty(5)
+->return empty array which length is 5
+
+np.zeors(10, dtype=int)
+->return array([0,0,0,0,0,0,0,0,0,0])
+
+np.ones((3,5), dtype=float) #3X5 array
+->return array([[1., 1., 1., 1., 1.], [1., 1., 1., 1., 1.], [1., 1., 1., 1., 1.]])
+
+np.arange(0,10,2) #start=0, end=20, step=2
+->return array([0,2,4,6,8])
+
+np.linspace(0,1,5) #divide 0 to 1 into 5 numbers
+->return array([0., 0.25, 0.5, 0.75, 1.])
+
+np.random.random((2,2)) #returns 2X2 array. elements are random
+
+np.random.normal(0,1,(2,2)) #returns 2X2 array which avg=0, standard deviation=1 by standard regular distribution
+
+np.random.randint(0,10,(2,2)) #returns 2X2 array which is filled random number in 0 to 10.
+
+
+
+Basic of array
+x2=np.random.randint(10, size=(3,4))
+>>
+[[2, 2, 9, 0],
+[4, 2, 1, 0],
+[1, 8, 7, 3]]
+
+x2.ndim #dimension
+>>2
+x2.shape
+>>(3,4)
+x2.size
+>>12
+x2.dtype
+>>'int64'
+
+RESHAPE
+reshape : change array's shape
+EX)
+x=np.arange(8)
+x.shape
+>>(8, )
+x2=x.reshape((2,4))
+>>
+[[0, 1, 2, 3],
+[4, 5, 6, 7]]
+x2.shape
+>>(2,4)
+
+CONCATENATE
+concatenate : connect array
+EX)
+x=np.array([0, 1, 2])
+y=np.array([3, 4, 5])
+np.concatenate([x,y]) #array([0, 1, 2, 3, 4, 5])
+
+->also can connect array on the axis
+EX)
+matrix=np.arange(4).reshape(2,2) 
+#array([[0, 1], [2, 3]])
+np.concatenate([matrix, matrix], axis=0) #axis=0:downward
+#array([[0, 1], [2, 3], [0, 1], [2, 3]])
+np.concatenate([matrix, matrix], axis=1) #axis=1:transverse
+#array([[0, 1, 0, 1], [2, 3, 2, 3]])
+
+SPLIT
+np.split : split array on the axis
+EX)
+matrix=np.arange(16).reshape(4, 4)
+upper, lower=np.split(matrix, [3], axis=0)
+#upper = array([[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11]])
+#lower = array([12, 13, 14, 15])
+
+left, right=np.split(matrix, [3], axis=1)
+#left=array([[0, 1, 2], [4, 5, 6], [8, 9, 10], [12, 13, 14]])
+#right=array([[3], [7] ,[11], [15]])
+
+
+Numpy operation
+-numpy support universal function.
+EX)
+x=np.arange(4)
+#array([0, 1, 2, 3])
+x+5
+#array([5, 6, 7, 8])
+x-5
+#array([-5, -4, -3, -2])
+x*5
+#array([0, 5, 10, 15])
+x/5
+#array([0., 0.2, 0.4, 0.6])
+
+this also can apply to multi-dimensional matrix
+EX)
+x=np.arange(4).reshape((2,2))
+#array([[0, 1], [2, 3]])
+y=np.random.randint(10, size=(2,2))
+#array([[1, 6], [4, 2]])
+
+x+y
+#array([[1, 7], [6, 5]])
+x-y
+#array([[-1, -5], [-2, 1]])
+
+Broadcasting
+:operate between different shape of array
+EX)
+np.arange(3).reshape((3,1))+np.arange(3)
+#array([[0], [1], [2]])+array([0, 1, 2])=array([[0, 1, 2], [1, 2, 3], [2, 3, 4]])
+
+Aggregation function and masking operation
+EX)
+x=np.arange(8).reshape((2,4))
+np.sum(x) #28
+np.min(x) #0
+np.max(x) #7
+np.mean(x) #3.5
+np.std(x) #standard deviation
+
++)also can sum on the axis
+x=np.arange(8).reshape((2,4))
+#array([[0, 1, 2, 3], [4, 5, 6, 7]])
+np.sum(x, axis=0)
+#array([4, 6, 7, 10])
+np.sum(x, axis=1)
+#array([6, 22])
+
+Masking operation_get specific values by using True, False array
+EX)
+x=np.arange(5)
+#array([0, 1, 2, 3, 4])
+x<3
+#array([True, True, True, False, False])
+x>5
+#array([False, False, False, False, False])
+x[x<3]
+#array([0, 1, 2])
+
+#split the array
+numpy.split(array, n, axis=)
+axis=0 or 1
+n=the num of the list I want to get after split

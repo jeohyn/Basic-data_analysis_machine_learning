@@ -1,0 +1,235 @@
+Pandas?
+efficiently handle and store structured data. numpy based.
+
+Series
+:has data and index. numpy array reinforced form
+EX)
+data=pd.Series([1, 2, 3, 4])
+#index=0, 1, 2, 3 data=1, 2, 3, 4
++)
+data=pd.Series([1, 2, 3, 4], index=['a', 'b', 'c', 'd'])
+data['b']
+>>2
+
++)can make by dictionary
+EX)
+population_dict={
+	'korea' : 5180, 'china' : 141500, 'usa' : 32676}
+population=pd.Series(population_dict)
+#>>index='china', 'korea', 'usa' data=141500, 5180, 32676
+
+
+DataFrame
+:several series gathered together
+
+EX)
+population_dict={
+	'korea' : 5180, 'china' : 141500, 'usa' : 32676}
+population=pd.Series(population_dict)
+gdp_dict={
+'korea' : 16932000, 'china' : 1409250000, 'usa' : 2041280000}
+gdp=pd.Series(gdp_dict)
+country=pd.DataFrame({'population':population, 'gdp'=gdp})
+
+country.index
+#Index(['china', 'korea', 'usa'])
+country.columns
+#Index(['gdp', 'population'], dtype='object')#object in dataframe=string
+country['gdp']
+#retrun series data(gdp data)
++)dataframe can make dictionary
+
+Series also can use operator like numpy array.
+EX)
+gdp_per_capita=country['gdp']/country['population']
+##if you want to put gdp_per_capita to country dataframe
+country['gdp per capita']=gdp_per_capita
+
+How to save it?
+country.to_csv('./country.csv')
+country.to_excel('./country.xlsx')
+
+How to read it?
+country=pd.read_csv('./country.csv')
+country=pd.read_excel('./country.xlsx')
+
+Indexing & Slicing
+loc : Indexing/sliding referencing explicit indexes
+EX)
+country.loc['china']
+#get data only about china
+country.loc['china':'korea', :'population'] #slicing
+#get data about china to korea, ~to population
+
+iloc:python style integer index indexing/slicing
+WX)
+country.iloc[0]
+#get data of china(index[0])
+country.iloc[1:2, :2]
+#get ~to population data(index[:2]) of korea and usa(index[1:2])
+
+HOW to add new data or edit data in dataframe?
+ADD
+1. add list
+dataframe=pd.DataFrame(columns=['name', 'age', 'address'])
+dataframe.loc[0]=['Jake','26','NY']
+2. add dictionary
+dataframe.loc[1]={'name':'Jane', 'age':'24' ,'address':'PA'}
+EDIT
+dataframe.loc[0,'name']='Lia'
+
+ADD new COLUMN
+#put null. NaN=Not a Number
+dataframe['phone']=np.nan
+dataframe.loc[0, 'phone']='5851234567'
+
+SELECT COLUMN
+dataframe['name']
+#returns series(data only about name)
+dataframe[['name', 'address', 'age']]
+#returns dataframe(data about name, address, and age)
+
+CHECK null data(NaN, None)_isnull(), notnull()
+isnull() : check data is null_ if null : return true
+notnull() : check data is not null_if not null : return true
+
+DELETE or FILL null data_dropna(), fillna()
+dropna()_delete null data row
+fillna(a)_fill NaN/None to a
+
+Series operation
+EX)
+A=pd.Series([2, 4, 6], index=[0, 1, 2])
+B=pd.Series([1, 3, 5], index=[1, 2, 3])
+A+B
+#index : 0 data : NaN(=2+NaN), index : 1 data : 5.0, index : 2 data : 9.0, index : 3 data : NaN(=5+NaN)
+A.add(B, fill_value=0)
+#index : 0 data : 2.0(=2+0), index : 1 data : 5.0, index : 2 data : 9.0, index : 3 data : 5.0(=5+0)
+
+DataFrame operation
+sub, mul, div possible
+EX)
+A=pd.DataFrame(np.random.randint(0, 10, (2, 2)), columns=list("AB"))
+B=pd.DataFrame(np.random.randint(0, 10, (3, 3)), columns=list("BAC"))
+A+B 
+#NaN value : C row, column 2(index 2)
+A.add(B, fill_value=0)
+#C row operation : C row+0, column 2 operation : column2+0
+
+min, sum, mean also possible
+EX)
+data={
+	'A':[i+5 for i in range(3)],
+	'B':[i**2 for i in range(3)]
+}
+#B:square value
+df=pd.DataFrame(data)
+#array([[5, 0], [6, 1], [7, 4]]) and column names are A and B in regular order
+df['A'].sum() #18
+df.sum() # A : 18 B : 5
+df.mean() #A : 6.000000 B : 1.666667
+
+Sorting DataFrame
+-sorting by value : df.sort_values("column name") #ascending order
+		df.sort_values("column name", ascending=False) #descending order
+		df.sor_values(["column name1", "column name2"]) #sort by column name1 and if there's same value in column name1, sort that by column name2
+
+Search by condition(Masking operation)
+EX)
+df=pd.DataFrame(np.random.rand(5, 2) , columns=["A", "B"]) #make 5 rows, 2 columns
+df["A"]<0.5
+#print True, False
+df[(df["A"]<0.5)&(df["B"]>0.3)] #AND operation
+df.query("A<0.5 and B>0.3") #this is sames as the upper line
+
+IF its string, there's another method to search
+df["column name"].str.contains(string that want to search)
+df.column name.str.match(string that want to search) #this is same as the upper line
+(also can use regular expression in string that want to search)
+
+PROCESS data by function
+*apply()
+df=pd.DataFrame(np.arange(5), columns=["Num"])
+def square(x):
+	return x**2
+df["Square"]=df["Num"].apply(square)
+#returns the squared "Num" value, create Square column and save in it
+df["Square"]=df.Num.apply(lambda x: x**2)
+#get x from Num column and return x**2, create Square column and save in it. same as the upper line
+
+*replace()_use when want to change data
+EX)
+df["Sex"]=df.Sex.replace({"Male": 0, "Female": 1})
+#replace Male to 0, Female to 1
+df.Sex.replace({"Male": 0, "Female": 1}, inplace=True) # same as the upper line.
+
+GROUPING
+EX)
+df=pd.DataFrame({'key': ['A', 'B', 'C', 'A', 'B', 'C'], 'data1':[1, 2, 3, 1, 2, 3], 'data2': np.random.randint(0, 6, 6)})
+df.groupby('key')
+#grouping by key(A with A, B with B, C with C)
+df.groupby('key').sum()
+#return array of sum in group(A with A, B with B, C with C). column is data1 and data2
+df.groupby(['key', 'data1']).sum()
+#group by key and data1(A with A, B with B, C with C and then 1 with 1, 2 with 2, 3 with 3) and return array of sum
+
+-aggregate
+df.groupby('key').aggregate(['min', np.median, 'max'])
+#return min, median, max in each column(data1, data2) in group
+df.groupby('key').aggregate({'data1': 'min', 'data2': np.sum})
+#return min in data1 column, sum in data2 column in group
+
+-filter_filter data by group properties
+def filter_by_mean(x):
+	return x['data2'].mean()>3
+df.groupby('key').mean()
+#retrun means
+df.groupby('key').filter(filter_by_mean)
+#return dataframe(key, data1, data2) that mean of data2 is bigger than 3
+
+-apply
+EX)
+df.groupby('key').apply(lambda x: x.max()-x.min())
+#return max-min data 
+
+-get_group
+get data by groupby's key
+EX)
+df=pd.read_csv('./univ.csv')
+df.groupby("State").get_group("Pennsylvania")
+#get data about Pennsylvania
+
+MULTIINDEX
+EX)
+#4 rows, 2 columns. make multi column index 
+df=pd.DataFrame(
+	np.random.randn(4,2),
+	index=[['A', 'A', 'B', 'B'], ['1', '2', '1', '2']],
+	columns=['data1', 'data2'])
+
+#4 rows, 4 columns. make multi row index
+df=pd.DataFrame(
+	np.random.randn(4,2),
+	columns=[['A', 'A', 'B', 'B'], ['1', '2', '1', '2']])
+df['A']
+#get df['A']['1'] and df['A']['2']
+df['A']['1']
+#get df['A']['1']
+->CAN USE loc, iloc 
+
+PIVOT_TABLE
+Newly summarized table by selecting only the data you need from your data
+index : need key for row index
+column : labeled value for column index
+value : data to analyze
+
+EX) in titanic data
+df.pivot_table(
+	index='sex', columns='class', values='survived', aggfunc=np.mean
+)
+#mean of survival(survived) in sex(row) and class(column)
+
+EX)
+df.pivot_table(
+	index='month', columns='history', values=['income', 'spending'])
+#data of income and spending in month

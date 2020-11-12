@@ -1,0 +1,233 @@
+#learning Q-learning(dummy. has many errors)
+
+●Frozen Lake : Even if you know the way, ask.
+->ask Q-function where to go. Choose the action which gives the max reward.(in mathmatical expression, max Q(state, action, argmax Q(state, action))
+Q-function:Q(state, action), return reward.
+
+-->how to get Q-function?
+
+●assume Q in s' exists
+*My condition_ my state is s.
+when I do action a, I'll go to s'.
+when I do action a, I'll get reweard r.
+Q in s', Q(s', a') exists.
+->How can we express Q(s, a) using Q(s', a')?
+Q(s, a)=r+max Q(s', a') (get r when I do action a, and then get reward when I do a'(max Q(s', a')) next time)
+
+R(t)=r(t)+R(t+1)(r(t) : reward at t, R(t+1) : sum of rewear t+1 to n(terminal reward))
+
+●optimal reward
+R*(t)=r(t)+max R(t+1)
+-> similar to Q(s,a)=r+max Q(s', a')
+
+●summary
+For each s, a initialize table entry Q(s,a)<-0
+Observe current state s
+Do forever : 
+-select an action a and execute it
+-receive ummediate reward r
+-observe the new state s'
+-update the table entry for Q(s,a) as follows:
+   Q(s,a)<-r+max Q(s',a')
+-s<-s'
+----------------------------------------------------------------------------------------
+
+#Exploit vs Exploration
+
+Exploit : use the rewards that already have
+Exploration : find new rewards
+
+●method
+1.E-greedy : define the rate of exploration(e)
+e=0.1
+if rand<e: //explorate
+   a=random
+else: //exploit
+   a=argmax(Q(s,a))
+
+-->if we repeat this a lot, there's no need to explorate
+---->use decaying E-greedy
+
+*decaying E-greedy
+for i in range(1000)
+   e=0.1/(i+1)
+   if random(1)<e: //explorate
+      a=random
+   else: //exploit
+      a=argmax(Q(s,a))
+
+2. add random noise
+before select where to go, add random noise
+
+a=argmax(Q(s,a)+random_values)
+ex)
+a=argamx([0.5, 0.6, 0.3, 0.2]+[0.1, 0.2, 0.7, 0.3])
+ =argmax([0.6, 0.8, 1.0])
+->select third action
+
+-->if we repeat this a lot, there's no need to explorate
+---->use decaying random noise
+
+*decaying random noise
+for i in range(1000)
+   a=argmax(Q(s,a)+random_values/(i+1))
+
++)compare E-greedy w/ random noise
+if we use random noise, there is a high probability of choosing the next highest reward action, if not the highest reward action than using E-greedy.
+
+
+=>Use exploit and exploration algorithm to select action.
+
+●discounted reward_use to separate different route but same reward
+Q(s,a)<-r+Γ*max Q(s', a') (0<Γ<1)
+<=>R(t)=r(t)+Γ*r(t+1)+Γ^2*r(t+2)+...+Γ^n-t*r(n)
+
+●codes
+##E-greedy
+for i in range(num_episodes):
+    e=1./((i/100)+1)
+    #the Q-Table learning algorithm
+    while not done:
+        #choose an action by e greedy
+        if np.random.rand(1)<e:
+            action=env.action_space.sample()
+        else:
+            action=np.argmax(Q[state, :])
+
+##random noise
+for i in range(num_episodes):
+    #choose an action by greedily (with noise) picking from Q table
+    action=np.argmax(Q[state, :]+np.random.randn(1, env.action_space.n)/(i+1))
+
+##discounted reward
+#discount factor
+dis=.99
+
+#update Q-Table w/ArithmeticError new knowledge using decay rate
+Q[state, action]=reward+dis*np.max(Q[new_state, :])
+-----------------------------------------------------------------------------------------------
+
+#Deterministic vs Stochastic(nondeterministic)
+
+●Deterministic models
+the output of the model is fully determined by the parameter values and the initial conditions initial conditions
+-->in code, 'is_slippery : False' option
+
+●Stochastic models 
+It possess some inherent randomness.
+The same set of parameter values and initial conditions will lead to and ensemble of different output.
+-->in code, 'is_slippery : True' option=>env=gym.make('FrozenLake-v0')
+
+●In stochastic worlds, unfortunately, Q-learning(for deterministic worlds) does not work anymore.
+->WHY?
+*Return value from Q-learning is limited.
+ex)computer try to moves to right, but actually moves to up(because it's slippery). BUT computer understnds that it moves to right, so the return value of right from Q-learning this time is larger than down.
+
+-->SOLUTION
+*listen to Q(s') just a little bit and update Q(s) little bit(learning rate)
+LIKE OUR LIFE MENTORS_don't just listen and follow one mentor. need to listen from many mentors.
+
+--->learning incrementally
+learning rate α. 
+Let α=0.1<=>computer will accept the result of Q-learning 10%, probability of move randomly is (1-α).
+Q(s,a)<-(1-α)*Q(s,a)+α*{r+Γ*max Q(s',a')}
+<=>Q(s,a)<-Q(s,a)+α*{r+Γ*(max Q(s',a'))-Q(s,a)}
+
+●Convergence
+Q̂(s,a)<-(1-α)Q̂(s,a)+α{r+Γ*max Q̂(s',a')}
+can still prove convergence of Q̂ to Q [Watkins and Dayan, 1992]
+--------------------------------------------------------------------------------------------------
+
+#Q-Network
+->we can control the output(reward for all actions, best reward action, ...)
+
+●Q-Network training(linear regression)
+H(x)=W*x
+cost(W)=1/m*sum(W*x(i)-y(i))^2  (y(i) is the real value, W*x(i) is Q-prediction value)
+(The range of values i is 1 to m.)
+
+->cost(W)=(W*s-y)^2
+(y=r+Γ*max Q(s'), W*s=Q-prediction)
+
+●Q-Network training(math notations)
+W*s=Q̂(s, a|θ)=Q*(s,a)
+(θ=weight, network)
+(Q̂:predict, Q*:optimal)
+
+->choose θ to minimize
+min(sum[Q̂(s(t), a(t)|θ)-(r(t)+Γ*max Q(s(t+1), a'|θ))]^2
+(The range of values t is 0 to T.)
+(W*s=Q̂(s(t), a(t)|θ), Q*(s,a)=r(t)+Γ*max Q(s(t+1), a'|θ))
+
+●Y lavel and loss function in algorithm(Playing Atari with Deep Reinforcement Learning algorithm)
+
+Set y(j)={r(j) for terminal Φ(j+1)(if next state is goal)
+	      {r(j)+Γ*max Q(Φ(j+1), a'|θ) for non-terminal Φ(j+1) (TARGET)
+Perform a gradient descent step on (y(j)-Q(Φ(j+1), a'|θ))^2 according to equation 3.//get the value that makes (y(j)-Q(Φ(j+1), a'|θ))^2 least.
+
+->(y(j)-Q(Φ(j+1), a'|θ))^2 : target/label
+(Q(Φ(j+1), a'|θ)=W*s)
+
+●Deterministic or Stochastic?
+Stochastic : Q(s,a)<-(1-α)Q(s,a)+α{r+Γ*max Q(s',a')}
+<->r(j)+Γ*max Q(Φ(j+1), a'|θ)
+
+●Convergence
+min(sum[Q̂(s(t), a(t)|θ)-(r(t)+Γ*max Q(s(t+1), a'|θ))]^2
+
+converges to Q* using table lookup representation
+BUT diverges using neural networks due to Correlation b/w samples, Non-stationary targets
+->BUT if you want Reinforcement+Neural Net
+-->USE DQN(Deep, Replay, Separated networks)
+
+
++)
+results of codes that I upload are really poor. WHY?
+->network is small(shallow), and other reasons are written right above
+----------------------------------------------------------------------------------------------------
+
+#DQN
+
+Q-Nets are unstable and diverges.
+->use DQN
+
+There are two big issues in Q-Nets
+-correlations b/w samples, non-stationary targets
+
+●correlations between samples
+we select an action and (reward, environment) together
+environments of each cases from loop(for statement) are very similar
+=>there are correlations between samples
+
+WHY it's a problem?
+in linear regression, line will be limited(line gradient can be very different from a gradient from total cases)
+
+●non-stationary targets
+target=Ylabel=r(t)+Γ*max Q̂(s(t+1), a'|θ)
+Ypred=Q̂(s(t), a|θ)
+
+->to make a value of Ypred close to the value of target, update the Ypred's network(weight, θ)
+->in this case, we are not update Ylabel's network, but its network moves automatically because Ypred and target use same network
+-->LIKE as soon as you shoot an arrow, move the target position
+=>non-stationary tragets
+
+●DQN's three solutions
+1. go deep_use many layers
+
+2.capture and replay_solve correlations b/w samples problem
+-experience replay
+while in for loop(loop that get action), don't learn but save in a buffer. After that, get samples randomly from the buffer and do learning
+
+3.separate networks:create a target network_solve non-stationary targets problem
+->USE min(sum(Q̂(s(t), a(t)|θ)-(r(t)+Γ*max Q̂(s(t+1), a'|¯θ))^2)
+(range of sum is t=0 to T, θ!=¯θ)
+
+->in algorithm
+Set y(j)={r(j) if episode terminates at step j+1
+           {r(j)+Γ*max Q̂(Φ(j+1), a'|¯θ) otherwise
+Perform a gradient descent on (y(j)-Q(Φ(j), a(J)|θ))^2 with the respect to the network parameter θ //update only θ, not ¯θ
+Every C steps reset Q̂=Q //update Q̂ in ¯θ
+(Nature Paper (2015))
+
+
+
