@@ -10,3 +10,6 @@ The source of codes and explanation is http://hunkim.github.io/ml/
 
 *supervised learning
 The source of codes and explanation is https://www.youtube.com/channel/UCOAyyrvi7tnCAz7RhH98QCQ/videos
+
+# myProject1 : reinforcement learning
+using Unity and ml-agents, I made a maze.
