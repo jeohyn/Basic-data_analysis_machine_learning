@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 
-#get title from 
+#get title from name
 def getTitle(data):
     for i in data.index:
         splits= data['Name'][i].split(",")
